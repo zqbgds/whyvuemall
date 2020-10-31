@@ -71,43 +71,7 @@
       <li>列表61</li>
       <li>列表62</li>
       <li>列表63</li>
-      <li>列表64</li>
-      <li>列表65</li>
-      <li>列表66</li>
-      <li>列表67</li>
-      <li>列表68</li>
-      <li>列表69</li>
-      <li>列表70</li>
-      <li>列表71</li>
-      <li>列表72</li>
-      <li>列表73</li>
-      <li>列表74</li>
-      <li>列表75</li>
-      <li>列表76</li>
-      <li>列表77</li>
-      <li>列表78</li>
-      <li>列表79</li>
-      <li>列表80</li>
-      <li>列表81</li>
-      <li>列表82</li>
-      <li>列表83</li>
-      <li>列表84</li>
-      <li>列表85</li>
-      <li>列表86</li>
-      <li>列表87</li>
-      <li>列表88</li>
-      <li>列表89</li>
-      <li>列表90</li>
-      <li>列表91</li>
-      <li>列表92</li>
-      <li>列表93</li>
-      <li>列表94</li>
-      <li>列表95</li>
-      <li>列表96</li>
-      <li>列表97</li>
-      <li>列表98</li>
-      <li>列表99</li>
-      <li>列表100</li>
+
     </ul>
   </div>
 </template>
@@ -119,7 +83,7 @@
   import RecommendView from "./childComps/RecommendView";
   import FeatureView from "./childComps/FeatureView";
 
-  import { getHomeMultidata } from "network/home"
+  import { getHomeMultidata, getHomeGoods } from "network/home"
 
   export default {
     name: "Home",
@@ -133,16 +97,36 @@
     data(){
       return {
         banners: [],
-        recommends: []
+        recommends: [],
+        goods: {
+          pop: {page: 0, list: []},
+          new: {page: 0, list: []},
+          sell: {page: 0, list: []}
+        }
       }
     },
     created() {
       // 1.请求多条数据
-      getHomeMultidata().then(res => {
-        // console.log(this.banners = res.data.data.banner.list)
-        this.banners = res.data.data.banner.list
-        this.recommends = res.data.data.recommend.list
-      })
+      // 将具体的内容定义在方法中，然后从方法中调用
+      this.getHomeMultidata()
+      this.getHomeGoods('pop')
+      this.getHomeGoods('new')
+      this.getHomeGoods('sell')
+    },
+    methods: {
+      getHomeMultidata(){
+        getHomeMultidata().then(res => {
+          this.banners = res.data.data.banner.list
+          this.recommends = res.data.data.recommend.list
+        })
+      },
+      getHomeGoods(type){
+        const page = this.goods[type].page + 1
+        getHomeGoods(type,page).then(res => {
+          this.goods[type].list.push(...res.data.data.list)
+          this.goods[type].page += 1
+        })
+      }
     }
   }
 </script>
