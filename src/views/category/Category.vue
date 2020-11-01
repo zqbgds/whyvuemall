@@ -118,6 +118,7 @@
         scroll: null
       }
     },
+    // 注意这里不能写在created生命周期中。
     mounted() {
       this.scroll = new BScroll('.wrapper', {
 
