@@ -3,18 +3,22 @@
     <nav-bar class="home-nav">
       <div slot="center">Vue商城</div>
     </nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend-view :recommends="recommends"></recommend-view>
-    <feature-view></feature-view>
-    <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
-    <goods-list :goods="showGoods"></goods-list>
+    <scroll class="content">
+      <home-swiper :banners="banners"></home-swiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view></feature-view>
+      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
   </div>
 </template>
 
 <script>
   import NavBar from "components/common/navbar/NavBar"
+  import Scroll from "components/common/scroll/Scroll";
   import TabControl from "components/content/tabControl/TabControl";
   import GoodsList from "components/content/goods/GoodsList";
+
 
   import HomeSwiper from './childComps/HomeSwiper'
   import RecommendView from "./childComps/RecommendView";
@@ -26,6 +30,7 @@
     name: "Home",
     components: {
       NavBar,
+      Scroll,
       TabControl,
       HomeSwiper,
       RecommendView,
@@ -96,7 +101,8 @@
 
 <style scoped>
   #home{
-    padding-top: 44px;
+    /*padding-top: 44px;*/
+    height: 100vh;
   }
   .home-nav{
     background-color: var(--color-tint);
@@ -111,5 +117,10 @@
     position: sticky;
     top:44px;
     z-index: 9;
+  }
+  .content{
+    height: calc(100% - 93px);
+    overflow: hidden;
+    margin-top: 44px;
   }
 </style>
