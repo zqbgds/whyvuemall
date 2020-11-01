@@ -118,10 +118,17 @@
         scroll: null
       }
     },
-    // 注意这里不能写在created生命周期中。
+    // 注意这里不能写在created生命周期中。因为在created的时候不能拿到我们上面的元素。
     mounted() {
       this.scroll = new BScroll('.wrapper', {
-
+        probeType: 3,
+        pullUpLoad: true
+      })
+      // this.scroll.on('scroll', (position) => {
+      //   console.log(position)
+      // })
+      this.scroll.on('pullingUp', () => {
+        console.log('上拉加载更多')
       })
     }
   }
