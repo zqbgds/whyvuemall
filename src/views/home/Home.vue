@@ -3,7 +3,8 @@
     <nav-bar class="home-nav">
       <div slot="center">Vue商城</div>
     </nav-bar>
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll"
+            :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
@@ -87,8 +88,11 @@
         this.$refs.scroll.scrollTo(0,0,500)
       },
       contentScroll(position){
-        console.log(position.y)
         this.isShowBackTop = position.y < -500
+      },
+      loadMore(){
+        this.getHomeGoods(this.currentType)
+        this.$refs.scroll.scroll.refresh()
       },
       /**
        * 网络请求相关方法
@@ -104,6 +108,8 @@
         getHomeGoods(type,page).then(res => {
           this.goods[type].list.push(...res.data.data.list)
           this.goods[type].page += 1
+
+          this.$refs.scroll.finishPullUp()
         })
       }
     }
