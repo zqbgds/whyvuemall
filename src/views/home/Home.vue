@@ -4,7 +4,7 @@
       <div slot="center">Vue商城</div>
     </nav-bar>
     <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll"
-            :pull-up-load="true" @pullingUp="loadMore">
+            :pull-up-load="true">
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
@@ -66,6 +66,11 @@
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
+
+      // 监听item中图片加载完成
+      this.$bus.$on('itemImageLoad', () => {
+        this.$refs.scroll.refresh()
+      })
     },
     methods: {
       /**
@@ -90,10 +95,6 @@
       contentScroll(position){
         this.isShowBackTop = position.y < -500
       },
-      loadMore(){
-        this.getHomeGoods(this.currentType)
-        this.$refs.scroll.scroll.refresh()
-      },
       /**
        * 网络请求相关方法
        */
@@ -109,7 +110,6 @@
           this.goods[type].list.push(...res.data.data.list)
           this.goods[type].page += 1
 
-          this.$refs.scroll.finishPullUp()
         })
       }
     }
