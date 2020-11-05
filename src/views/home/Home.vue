@@ -8,7 +8,7 @@
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
-      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"></tab-control>
+      <tab-control :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
@@ -52,7 +52,8 @@
           sell: {page: 0, list: []}
         },
         currentType: 'pop',
-        isShowBackTop: false
+        isShowBackTop: false,
+        tabOffsetTop: 0
       }
     },
     computed: {
@@ -75,6 +76,10 @@
       this.$bus.$on('itemImageLoad', () => {
         refresh()
       })
+      // 获取tabControl的offsetTop
+      // 所有的组件都有一个属性$el，用于获取组件中的元素
+      // this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+      console.log(this.$refs.tabControl.$el.offsetTop)
     },
     methods: {
       /**
@@ -135,11 +140,6 @@
     left: 0;
     right: 0;
     top: 0;
-    z-index: 9;
-  }
-  .tab-control{
-    position: sticky;
-    top:44px;
     z-index: 9;
   }
   .content{
