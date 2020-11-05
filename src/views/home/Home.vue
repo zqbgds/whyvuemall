@@ -4,7 +4,7 @@
       <div slot="center">Vue商城</div>
     </nav-bar>
     <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll"
-            :pull-up-load="true">
+            :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
@@ -28,6 +28,7 @@
   import FeatureView from "./childComps/FeatureView";
 
   import { getHomeMultidata, getHomeGoods } from "network/home"
+  import { debounce } from "common/utils";
 
   export default {
     name: "Home",
@@ -70,7 +71,7 @@
 
     },
     mounted() {
-      const refresh = this.debounce(this.$refs.scroll.refresh, 50)
+      const refresh = debounce(this.$refs.scroll.refresh, 50)
       this.$bus.$on('itemImageLoad', () => {
         refresh()
       })
@@ -79,15 +80,6 @@
       /**
        * 事件监听相关方法
        */
-      debounce(func, delay){
-        let timer = null
-        return function(...args){
-          if(timer) clearTimeout(timer)
-          timer = setTimeout(() => {
-            func.apply(this, args)
-          }, delay)
-        }
-      },
       tabClick(index){
         switch (index) {
           case 0:
@@ -99,13 +91,15 @@
           case 2:
             this.currentType = 'sell'
         }
-        console.log(index)
       },
       backClick(){
         this.$refs.scroll.scrollTo(0,0,500)
       },
       contentScroll(position){
         this.isShowBackTop = position.y < -500
+      },
+      loadMore(){
+        this.getHomeGoods(this.currentType)
       },
       /**
        * 网络请求相关方法
@@ -121,7 +115,8 @@
         getHomeGoods(type,page).then(res => {
           this.goods[type].list.push(...res.data.data.list)
           this.goods[type].page += 1
-
+          // 完成了上拉加载更多
+          this.$refs.scroll.finishPullUp()
         })
       }
     }
